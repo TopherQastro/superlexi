@@ -14,7 +14,7 @@ for all in emps:
     else:  #  These are single-pronunciation words
         words.append(all[0])
 
-print('words:', len(words))
+#print('words:', len(words))
 
 for each in words:
     for all in words:

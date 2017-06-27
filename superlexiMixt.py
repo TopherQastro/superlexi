@@ -38,9 +38,7 @@ while len(insertedLetters) < 5:  # try up to 5 letters
             insertedLetters+='a'
         insertedLetters+='a'
     else:  #  advance a letter earlier in the string by 1, then convert everything to the right to "a" 
-        #print('else')
         zPoint = insertedLetters.index('z')
-        #print(zPoint)
         insertedLetters = insertedLetters[:zPoint-1]+chr(ord(insertedLetters[zPoint-1])+1)
         while len(insertedLetters)!=oldLettersLen:
             insertedLetters+='a'

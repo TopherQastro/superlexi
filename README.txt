@@ -1,5 +1,5 @@
 
-I'm not sure what you call it when you merge two words together using parentheses to delineate the differences of letters within them. I'm going to call them superlexemes until I have a better answer. Here are a few examples:
+I'm not exactly sure what you call it when you merge two words together using parentheses to delineate the differences of letters within them. I'm going to call them superlexemes until I have a better answer. Here are a few examples:
 
 addi(c)tive
 w(aiv)ed
