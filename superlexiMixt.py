@@ -1,34 +1,47 @@
 import csv
 import string
 
-emps = csv.reader(open('~/remezclemos/eng/data/USen/empDic-USen-unik.csv', 'r+'))
+letList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+firstCharList = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+
+emps = csv.reader(open('/home/tqastro/skrypts/GitLib/remezclemos/eng/data/USen/empDic-USen-unik.csv', 'r+'))
+namePasses = ['mark', 'hope', 'perry', 'will', 'bill', 'faith', 'tom', 'rob', 'bob', 'tanner', 'smith']
+blackList = []
+
 #  This file can be found in the "remezclemos" repository, listed under this account
 #  It contains a list of practically every English word
 
-words = []
+
+
 for all in emps:
     if '(' in all[0]:  #  This takes care of words with more than one pronunciation
-        words.append(all[0][:-3])
+        pWord = all[0][:-3]
     else:  #  These are single-pronunciation words
-        words.append(all[0])
+        pWord = all[0]
+    #print(pWord)
+    try:
+        letIndex = letList.index(pWord[0])
+        firstCharList[letIndex].append(pWord)
+    except ValueError:
+        continue
 
-insertedLetters = chr(96)  #  This is the char number before 'a', given that we start the loop by adding 1 to this number
+insertedLetters = str('a')
 
 while len(insertedLetters) < 5:  # try up to 5 letters
-    while insertedLetters[-1] != chr(123):  #  'z' is 122
-        insertedLetters = insertedLetters[:-1]+chr(ord(insertedLetters[-1])+1)
-
-        for each in words:
+    for each in firstCharList:
+        for all in each:
             wordI = int(0)
-            eachLen = len(each)
-            while wordI <= eachLen:
-                augmentWord = each[:wordI]+insertedLetters+each[wordI:]  #  Test if the extra string will create another valid word anywhere within the test-word
-                if (augmentWord in words):# and (len(augmentWord) == (len(insertedLetters) + eachLen)):
-                    print('PROPHOUND:', each, '|', insertedLetters, '|', each[:wordI]+'('+insertedLetters+')'+each[wordI:])
+            allLen = len(all)
+            while wordI <= allLen:
+                augmentWord = all[:wordI]+insertedLetters+all[wordI:]  #  Test if the extra string will create another valid word anywhere within the test-word
+                firstCharChk = letList.index(augmentWord[0])
+                #print('checking list:', firstCharList[firstCharChk])
+                if (augmentWord in firstCharList[firstCharChk]):# and (len(augmentWord) == (len(insertedLetters) + eachLen)):
+                    print('PROPHOUND:', all, '|', insertedLetters, '|', all[:wordI]+'('+insertedLetters+')'+all[wordI:])
                 wordI+=1
-                
-        if insertedLetters[-1] == 'z':
-            break
+            if insertedLetters[-1] == 'z':
+                break
+
     oldLettersLen = len(insertedLetters)
     if insertedLetters[0] == 'z':        
         # after all letters hit 'z', augment string by one, all of them "a"
@@ -37,11 +50,16 @@ while len(insertedLetters) < 5:  # try up to 5 letters
         while len(insertedLetters) < oldLettersLen:
             insertedLetters+='a'
         insertedLetters+='a'
-    else:  #  advance a letter earlier in the string by 1, then convert everything to the right to "a" 
-        zPoint = insertedLetters.index('z')
-        insertedLetters = insertedLetters[:zPoint-1]+chr(ord(insertedLetters[zPoint-1])+1)
-        while len(insertedLetters)!=oldLettersLen:
-            insertedLetters+='a'
-            print(insertedLetters)
-    
-        
+    else:  #  advance a letter earlier in the string by 1, then convert everything to the right to "a"
+        print('insertedLetters:', insertedLetters)
+        if len(insertedLetters) > 1:
+            zPoint = insertedLetters.index('z')
+            upPoint = zPoint - 1
+            nextLet = letList.index(upPoint) + 1
+            insertedLetters = insertedLetters[:upPoint]+letList[nextLet]
+            while len(insertedLetters)!=oldLettersLen:
+                insertedLetters+='a'
+                print(insertedLetters)
+        else:
+            letCheck = letList.index(insertedLetters)
+            insertedLetters = letList[letCheck+1]
