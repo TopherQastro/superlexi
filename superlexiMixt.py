@@ -4,14 +4,19 @@ import string
 letList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 firstCharList = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
 
-emps = csv.reader(open('/home/tqastro/skrypts/GitLib/remezclemos/eng/data/USen/empDic-USen-unik.csv', 'r+'))
-namePasses = ['mark', 'hope', 'perry', 'will', 'bill', 'faith', 'tom', 'rob', 'bob', 'tanner', 'smith']
-blackList = []
+emps = csv.reader(open('/home/tqastro/projects/skrypts/GitLib/wemyx/eng/data/USen/empDic-USen-unik.csv', 'r+'))
+
+blackList = []  # filter proper names, single-letter words
+pureNamesFile = open('/home/tqastro/projects/skrypts/GitLib/wemyx/eng/data/pureNames.txt', 'r+')
+
+for line in pureNamesFile:
+    blackList.append(all)
+for all in letList:
+    if all != 'a' or all != 'i':
+        blackList.append(all)
 
 #  This file can be found in the "remezclemos" repository, listed under this account
 #  It contains a list of practically every English word
-
-
 
 for all in emps:
     if '(' in all[0]:  #  This takes care of words with more than one pronunciation
@@ -21,7 +26,8 @@ for all in emps:
     #print(pWord)
     try:
         letIndex = letList.index(pWord[0])
-        firstCharList[letIndex].append(pWord)
+        if pWord not in blackList:
+            firstCharList[letIndex].append(pWord)
     except ValueError:
         continue
 
@@ -43,7 +49,7 @@ while len(insertedLetters) < 5:  # try up to 5 letters
                 break
 
     oldLettersLen = len(insertedLetters)
-    if insertedLetters[0] == 'z':        
+    if insertedLetters[0] == 'z':
         # after all letters hit 'z', augment string by one, all of them "a"
         oldLettersLen = len(insertedLetters)
         insertedLetters = ''
