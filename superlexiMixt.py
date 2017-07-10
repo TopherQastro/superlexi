@@ -7,14 +7,20 @@ firstCharList = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
 emps = csv.reader(open('/home/tqastro/projects/skrypts/GitLib/wemyx/eng/data/USen/empDic-USen-unik.csv', 'r+'))
 
 blackList = []  # filter proper names, single-letter words
+whiteList = []  # make exceptions to some words
 pureNamesFile = open('/home/tqastro/projects/skrypts/GitLib/wemyx/eng/data/pureNames.txt', 'r+')
+twoLetters = open('/home/tqastro/projects/skrypts/GitLib/wemyx/eng/data/twoLetterWhiteList.txt', 'r+')
 
+for line in twoLetters:
+    whiteList.append(line[:-1])
+    print(line[:-1])
 for line in pureNamesFile:
-    blackList.append(all)
+    blackList.append(line[:-2])
 for all in letList:
-    if all != 'a' or all != 'i':
+    if (len(all) == 1) and ((all != 'a') or (all != 'i')):
         blackList.append(all)
 
+input('rawr')
 #  This file can be found in the "remezclemos" repository, listed under this account
 #  It contains a list of practically every English word
 
@@ -26,14 +32,15 @@ for all in emps:
     #print(pWord)
     try:
         letIndex = letList.index(pWord[0])
-        if pWord not in blackList:
-            firstCharList[letIndex].append(pWord)
+        if (pWord not in blackList) and ('.' not in pWord):
+            if (len(pWord) != 2) or (pWord in whiteList):
+                firstCharList[letIndex].append(pWord)
     except ValueError:
         continue
 
 insertedLetters = str('a')
-
-while len(insertedLetters) < 5:  # try up to 5 letters
+print('insertedLetters:', insertedLetters)
+while len(insertedLetters) <= 5:  # try up to 5 letters
     for each in firstCharList:
         for all in each:
             wordI = int(0)
@@ -43,29 +50,27 @@ while len(insertedLetters) < 5:  # try up to 5 letters
                 firstCharChk = letList.index(augmentWord[0])
                 #print('checking list:', firstCharList[firstCharChk])
                 if (augmentWord in firstCharList[firstCharChk]):# and (len(augmentWord) == (len(insertedLetters) + eachLen)):
-                    print('PROPHOUND:', all, '|', insertedLetters, '|', all[:wordI]+'('+insertedLetters+')'+all[wordI:])
+                    print(all+'+'+insertedLetters+'='+augmentWord, all[:wordI]+'('+insertedLetters+')'+all[wordI:])
                 wordI+=1
-            if insertedLetters[-1] == 'z':
-                break
 
     oldLettersLen = len(insertedLetters)
-    if insertedLetters[0] == 'z':
+    zCt = insertedLetters.count('z')
+    if zCt == oldLettersLen:
         # after all letters hit 'z', augment string by one, all of them "a"
-        oldLettersLen = len(insertedLetters)
         insertedLetters = ''
         while len(insertedLetters) < oldLettersLen:
             insertedLetters+='a'
         insertedLetters+='a'
     else:  #  advance a letter earlier in the string by 1, then convert everything to the right to "a"
-        print('insertedLetters:', insertedLetters)
-        if len(insertedLetters) > 1:
-            zPoint = insertedLetters.index('z')
-            upPoint = zPoint - 1
-            nextLet = letList.index(upPoint) + 1
-            insertedLetters = insertedLetters[:upPoint]+letList[nextLet]
+        if insertedLetters[-1] != 'z':
+            letCheck = letList.index(insertedLetters[-1])
+            insertedLetters = insertedLetters[:-1]+letList[letCheck+1]
+        else:
+            zPoints = oldLettersLen - 1
+            while insertedLetters[zPoints] == 'z':
+                zPoints-=1
+            letCheck = letList.index(insertedLetters[zPoints])  # This letter is no longer 'z'
+            insertedLetters = insertedLetters[:zPoints]+letList[letCheck+1]
             while len(insertedLetters)!=oldLettersLen:
                 insertedLetters+='a'
-                print(insertedLetters)
-        else:
-            letCheck = letList.index(insertedLetters)
-            insertedLetters = letList[letCheck+1]
+    print('insertedLetters:', insertedLetters)
